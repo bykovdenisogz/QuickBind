@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBind</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 id="title" class="title">QuickBind</h1>
+      <div class="header-actions">
+        <button id="settingsBtn" class="btn-settings" title="Settings">⚙</button>
+        <button id="themeToggle" class="theme-toggle" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <!-- Active link selector -->
+    <section class="section">
+      <label id="activeLinkLabel" class="label" for="activeSelect">Active link</label>
+      <div class="row">
+        <select id="activeSelect" class="select">
+          <option value="">— select a link —</option>
+        </select>
+        <button id="openLink" class="btn btn-primary" title="Open active link (or use hotkey)">
+          Open
+        </button>
+        <button id="openAll" class="btn btn-accent" title="Open all saved links in new tabs">
+          Open All
+        </button>
+      </div>
+    </section>
+
+    <!-- Link list -->
+    <section class="section">
+      <h2 id="savedLinksTitle" class="section-title">Saved links</h2>
+      <ul id="linkList" class="link-list"></ul>
+      <p id="emptyState" class="empty-state">No links saved yet.</p>
+    </section>
+
+    <!-- Add new link -->
+    <section class="section add-form">
+      <h2 id="addNewLinkTitle" class="section-title">Add new link</h2>
+      <input
+        id="nameInput"
+        class="input"
+        type="text"
+        placeholder="Name"
+        maxlength="64"
+      />
+      <input
+        id="urlInput"
+        class="input"
+        type="url"
+        placeholder="https://example.com"
+      />
+      <textarea
+        id="noteInput"
+        class="input textarea"
+        placeholder="Note (optional)"
+        maxlength="256"
+        rows="2"
+      ></textarea>
+      <button id="addBtn" class="btn btn-primary">Add</button>
+    </section>
+
+    <!-- Settings Dropdown (hidden by default) -->
+    <div id="settingsDropdown" class="settings-dropdown" hidden>
+      <div class="settings-dropdown-header">
+        <span id="settingsDropdownTitle">Settings</span>
+        <button id="settingsCloseBtn" class="btn-icon" title="Close">✕</button>
+      </div>
+      <div class="settings-dropdown-body">
+        <div class="settings-group">
+          <label class="label" for="themeSelect">Theme</label>
+          <select id="themeSelect" class="select">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="label" for="langSelect">Language</label>
+          <select id="langSelect" class="select">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="label" for="usernameInput">Username</label>
+          <input id="usernameInput" class="input" type="text" placeholder="Your name" maxlength="32" />
+        </div>
+        <div class="settings-group">
+          <h3 id="importExportLinksTitle" class="section-title">Import/Export Links</h3>
+          <div class="row">
+            <button id="exportBtn" class="btn btn-secondary" title="Export all links as JSON">Export</button>
+            <button id="importBtn" class="btn btn-secondary" title="Import links from JSON file">Import</button>
+            <input type="file" id="importFile" accept=".json" hidden />
+          </div>
+        </div>
+        <div class="settings-group">
+          <h3 id="importExportTitle" class="section-title">Import/Export Settings</h3>
+          <div class="row">
+            <button id="exportSettingsBtn" class="btn btn-secondary" title="Export settings as JSON">Export</button>
+            <button id="importSettingsBtn" class="btn btn-secondary" title="Import settings from JSON file">Import</button>
+            <input type="file" id="importSettingsFile" accept=".json" hidden />
+          </div>
+        </div>
+      </div>
+      <div class="settings-dropdown-footer">
+        <span class="version-label">Beta 0.1</span>
+      </div>
+    </div>
+
+    <!-- Status message -->
+    <div id="status" class="status" hidden></div>
+  </div>
+
+  <script src="sync.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
