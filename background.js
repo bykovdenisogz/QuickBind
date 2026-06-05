@@ -1,12 +1,44 @@
 /**
  * QuickBind — Background Service Worker
- * Handles global hotkey commands and opens the active saved link.
+ * Handles global hotkey commands, opens the active saved link,
+ * and manages the built-in ad blocker.
  */
+
+importScripts("adblocker.js");
+
+// Initialize ad blocker on startup
+chrome.runtime.onStartup.addListener(() => {
+  QuickBindAdBlocker.init();
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+  QuickBindAdBlocker.init();
+});
 
 // Listen for command events from keyboard shortcuts
 chrome.commands.onCommand.addListener((command) => {
   if (command === "open_active_link") {
     openActiveLink();
+  }
+});
+
+// Listen for messages from popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "toggleAdBlocker") {
+    QuickBindAdBlocker.setEnabled(message.enabled).then(() => {
+      sendResponse({ success: true });
+    });
+    return true;
+  }
+  if (message.type === "getAdBlockerStatus") {
+    QuickBindAdBlocker.isEnabled().then((enabled) => {
+      sendResponse({ enabled });
+    });
+    return true;
+  }
+  if (message.type === "getBlockedCount") {
+    sendResponse({ count: QuickBindAdBlocker.getBlockedCount() });
+    return true;
   }
 });
 

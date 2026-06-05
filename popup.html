@@ -93,6 +93,15 @@
           <input id="usernameInput" class="input" type="text" placeholder="Your name" maxlength="32" />
         </div>
         <div class="settings-group">
+          <label class="label" for="adBlockerToggle">Ad Blocker</label>
+          <div class="toggle-row">
+            <span id="adBlockerStatus" class="toggle-status">Enabled</span>
+            <button id="adBlockerToggle" class="toggle-switch active" title="Toggle ad blocker">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+        </div>
+        <div class="settings-group">
           <h3 id="importExportLinksTitle" class="section-title">Import/Export Links</h3>
           <div class="row">
             <button id="exportBtn" class="btn btn-secondary" title="Export all links as JSON">Export</button>
@@ -110,7 +119,7 @@
         </div>
       </div>
       <div class="settings-dropdown-footer">
-        <span class="version-label">Beta 0.1</span>
+        <span class="version-label">Beta 0.2</span>
       </div>
     </div>
 

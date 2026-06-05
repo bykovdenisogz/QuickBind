@@ -1,11 +1,16 @@
 {
   "manifest_version": 3,
   "name": "QuickBind",
-  "version": "0.1.0",
-  "description": "Quickly open saved URLs via global hotkeys. All data stored locally.",
+  "version": "0.2.0",
+  "description": "Quickly open saved URLs via global hotkeys. Built-in ad blocker. All data stored locally.",
   "permissions": [
     "storage",
-    "tabs"
+    "tabs",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html",

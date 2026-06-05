@@ -51,6 +51,9 @@ const I18N = {
     settingsExported: "Settings exported",
     settingsImported: "Settings imported",
     settingsImportFailed: (msg) => `Settings import failed: ${msg}`,
+    adBlocker: "Ad Blocker",
+    adBlockerEnabled: "Enabled",
+    adBlockerDisabled: "Disabled",
   },
   ru: {
     title: "QuickBind",
@@ -97,6 +100,9 @@ const I18N = {
     settingsExported: "Настройки экспортированы",
     settingsImported: "Настройки импортированы",
     settingsImportFailed: (msg) => `Ошибка импорта настроек: ${msg}`,
+    adBlocker: "Блокировщик рекламы",
+    adBlockerEnabled: "Включён",
+    adBlockerDisabled: "Выключен",
   },
   zh: {
     title: "QuickBind",
@@ -143,6 +149,9 @@ const I18N = {
     settingsExported: "设置已导出",
     settingsImported: "设置已导入",
     settingsImportFailed: (msg) => `设置导入失败：${msg}`,
+    adBlocker: "广告拦截器",
+    adBlockerEnabled: "已启用",
+    adBlockerDisabled: "已禁用",
   },
 };
 
@@ -177,6 +186,8 @@ const usernameInput = document.getElementById("usernameInput");
 const exportSettingsBtn = document.getElementById("exportSettingsBtn");
 const importSettingsBtn = document.getElementById("importSettingsBtn");
 const importSettingsFile = document.getElementById("importSettingsFile");
+const adBlockerToggle = document.getElementById("adBlockerToggle");
+const adBlockerStatus = document.getElementById("adBlockerStatus");
 
 // ─── State ───────────────────────────────────────────────────
 let links = [];
@@ -194,6 +205,7 @@ async function init() {
   applyTheme();
   applyLanguage();
   bindEvents();
+  initAdBlocker();
 }
 
 // ─── Storage helpers ─────────────────────────────────────────
@@ -220,6 +232,36 @@ async function saveSettings() {
   await chrome.storage.local.set({
     language: currentLang,
     username: usernameInput.value.trim(),
+  });
+}
+
+// ─── Ad Blocker ─────────────────────────────────────────────
+
+async function initAdBlocker() {
+  chrome.runtime.sendMessage({ type: "getAdBlockerStatus" }, (response) => {
+    if (response) {
+      updateAdBlockerUI(response.enabled);
+    }
+  });
+}
+
+function updateAdBlockerUI(enabled) {
+  if (enabled) {
+    adBlockerToggle.classList.add("active");
+    adBlockerStatus.textContent = t("adBlockerEnabled");
+  } else {
+    adBlockerToggle.classList.remove("active");
+    adBlockerStatus.textContent = t("adBlockerDisabled");
+  }
+}
+
+function toggleAdBlocker() {
+  const isActive = adBlockerToggle.classList.contains("active");
+  const newState = !isActive;
+  chrome.runtime.sendMessage({ type: "toggleAdBlocker", enabled: newState }, (response) => {
+    if (response && response.success) {
+      updateAdBlockerUI(newState);
+    }
   });
 }
 
@@ -551,6 +593,10 @@ function applyLanguage() {
   exportSettingsBtn.textContent = t("exportSettings");
   importSettingsBtn.textContent = t("importSettings");
 
+  const adBlockerLabel = settingsDropdown.querySelector('.settings-group .label[for="adBlockerToggle"]');
+  if (adBlockerLabel) adBlockerLabel.textContent = t("adBlocker");
+  updateAdBlockerUI(adBlockerToggle.classList.contains("active"));
+
   themeSelect.querySelector('option[value="dark"]').textContent = t("dark");
   themeSelect.querySelector('option[value="light"]').textContent = t("light");
 
@@ -620,6 +666,8 @@ function bindEvents() {
   exportSettingsBtn.addEventListener("click", exportSettings);
   importSettingsBtn.addEventListener("click", triggerImportSettings);
   importSettingsFile.addEventListener("change", handleImportSettings);
+
+  adBlockerToggle.addEventListener("click", toggleAdBlocker);
 
   document.addEventListener("click", (e) => {
     if (settingsVisible && !settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)) {
